@@ -1,3 +1,10 @@
+from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+machine = os.getenv("MACHINE")
 
 def stat_completed_message(
     stats_successful,
@@ -13,7 +20,7 @@ def stat_completed_message(
     else:
         success_line = "❌ Error in processing stats."
     return f"""--------
-*Tezos chain stats daily script*
+*|{machine}| Tezos chain stats daily script*
 {success_line}
 Task start: {task_start_ts}
 Task end: {task_end_ts}

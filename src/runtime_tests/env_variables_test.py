@@ -2,6 +2,7 @@ from os import environ
 
 expected_env_keys = [
     "LOOP",
+    "MACHINE",
     "CACHE_PATH",
     "RPC_ADDRESS",
     "TZKT_ADDRESS",

@@ -3,8 +3,7 @@ import datetime
 import pandas as pd
 import asyncio
 import aiohttp
-import os
-from dotenv import load_dotenv
+
 import json
 from src.time_utils import delta_until_utc_post_midnight
 from src.get_chain_stats import get_chain_stats
@@ -17,7 +16,12 @@ import src.utils.postgress
 from src.utils.status_messages import stat_completed_message
 
 from tqdm import tqdm
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+machine = os.getenv("MACHINE")
 
 
 cache = Path("cache")
@@ -95,7 +99,10 @@ async def process_tasks():
         if pre_sync_tests_passed["passed"]:
             # Main calculation function
             retries_on_day = 0
-            telegram_send.send(messages=[f"Initiating *Tezos chain stats* daily script at: \n {task_start_ts}"], parse_mode="markdown")
+            machine = os.getenv("MACHINE")
+            start_message = f"{machine} Initiating *Tezos chain stats* daily script at: \n {task_start_ts}"
+            print(start_message)
+            telegram_send.send(messages=[start_message], parse_mode="markdown")
 
             stats_successful = await get_chain_stats()
             stats_successful = True
