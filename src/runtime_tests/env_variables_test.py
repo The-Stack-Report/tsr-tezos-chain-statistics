@@ -1,7 +1,6 @@
 from os import environ
 
 expected_env_keys = [
-    "RUN_FULL",
     "LOOP",
     "CACHE_PATH",
     "RPC_ADDRESS",

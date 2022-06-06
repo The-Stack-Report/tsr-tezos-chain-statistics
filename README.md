@@ -1,10 +1,32 @@
 # Tezos chain stats
 
-This repository contains scripts to calculate statistics on the Tezos blockchain on regular time in intervals.
+This repository contains scripts to produce statistics datasets on the Tezos blockchain at various time intervals.
+The starting dataset contains various chain-level statistics such as active wallets, nr of transactions etc.
+
+It is set up to run o at regular intervals. Statistics at various intervals are cached locally on disk.
 
 ## Run instructions
 
-This script depends on access to RPC endpoints, tzkt API and the underlying postgress db populated by tzkt
+This script depends on access to RPC endpoints, tzkt API and the underlying postgres db populated by tzkt
+
+The output is uploaded to a specified s3 bucket with dataset metadata uploaded to mongodb.
+
+Script status messages are sent through telegram to be notified on successful and failed runs.
+
+*Step 1 - initialize TZKT*
+
+Start the TZKT indexer on the same machine as this script with the postgres database locally accessible.
+For instructions to run tzkt, see [https://github.com/baking-bad/tzkt](https://github.com/baking-bad/tzkt).
+
+*Step 2*
+
+Set environment variables. (see .env.sample file for variables to be set)
+
+RPC_ADDRESS - Used to validate if tzkt indexer is in sync by checking head levels
+TZKT_ADDRESS - Used to check current head level of the tzkt indexer
+TZKT_ADDRESS_PUBLIC - Used to check if the local tzkt instance is in sync with public network
+
+PG_ADDRESS - 
 
 Data pull
 TZKT indexer
@@ -12,10 +34,11 @@ TZKT indexer
 Data push
 S3
 
+The script will perform a number of startup tests to check if everything is set up correctly.
+
+When running in loop mode the script will re-test some connections & indexer sync state on every new run.
 
 **Dependencies**
-
-This script relies on having access to a postgres database populated by the TZKT tezos indexer. The address and db user can be set as environment variables.
 
 Status updates for running the script are sent to a Telegram bot using the telegram-send package for easy tracking of uptime.
 
