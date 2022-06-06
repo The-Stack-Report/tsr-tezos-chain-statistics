@@ -1,0 +1,3 @@
+Total number of *transaction groups* on the blockchain for *date* identified by operation hash.
+When a user calls a smart contract entrypoint, the code in the smart contract is able to call other smart contract endpoints as part of the initial call.
+Each call to an entrypoint is another transaction. In that case the operation contains multiple transactions included in the same operation in the block.

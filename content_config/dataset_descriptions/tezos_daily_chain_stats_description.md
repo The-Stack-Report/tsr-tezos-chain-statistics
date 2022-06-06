@@ -1,0 +1,1 @@
+Dataset containing daily tezos chain-level statistics on wallets, contracts & transactions. Refreshed on a daily basis with data up to the day before.

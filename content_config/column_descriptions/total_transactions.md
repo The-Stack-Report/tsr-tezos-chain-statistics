@@ -1,0 +1,2 @@
+Total number of *transactions* for time interval. Transactions are transfers of tokens and smart contract walls, which are a subset of all *operations* on the Tezos blockchain. See [https://opentezos.com/tezos-basics/operations/](https://opentezos.com/tezos-basics/operations/) for more detailed explanation.
+Multiple transactions can be included in one operation. (See *total_transaction_groups* column)

@@ -1,0 +1,1 @@
+Transactions where both sender and target are wallet addresses. Wallet addresses are defined as addresses starting with *tz*.

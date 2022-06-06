@@ -1,0 +1,2 @@
+Nr of unique wallets initiating *transactions*. Wallet addresses are defined as addresses starting with tz.
+Wallets can be involved in a number of ways in *transactions*. This metric most closely aligns with users actively performing actions. So this is the one used for such engagement metrics as *Daily Active Wallets*.
