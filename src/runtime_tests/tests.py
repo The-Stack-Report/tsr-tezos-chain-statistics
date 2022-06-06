@@ -47,7 +47,7 @@ async def run_tests(tests, batch_name=""):
                     result_msg = test_passed["msg"]
                     if test_passed["passed"] == False:
                         all_tests_passed = False
-                        test_result_msg = f"[x] - {test.__name__} has failed. {result_msg}"
+                        test_result_msg = f"[ ] - {test.__name__} has failed. {result_msg}"
                     else:
                         test_result_msg = f"[x] - {test.__name__} has passed.  {result_msg}"
                 else:
