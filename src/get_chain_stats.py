@@ -11,14 +11,15 @@ from src.sub_steps.extract_ops_by_day_from_db import extract_ops_by_day_from_db
 from src.sub_steps.enrich_ops_with_account_data import enrich_ops_with_account_data
 from src.sub_steps.stats_by_day import stats_by_day
 
-yesterday = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)
-yesterday = yesterday.strftime("%Y-%m-%d")
+
 
 chain_start_date = "2018-06-30"
 
 async def get_chain_stats():
     dbConnection = pg_connection()
     print('get chain stats')
+    yesterday = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)
+    yesterday = yesterday.strftime("%Y-%m-%d")
 
     # test_date = datetime.datetime.strptime("2018-06-30", "%Y-%m-%d")
     # q = ops_for_date_query(test_date)
@@ -43,14 +44,19 @@ async def get_chain_stats():
 
     today = datetime.datetime.now(timezone.utc)
     today_formatted = today.strftime("%Y-%m-%d")
+    accounts_update_time = False
+    accounts_update_time_formatted = False
 
-    accounts_update_time = os.path.getmtime(accounts_file_path)
+    if os.path.exists(accounts_file_path):
+        accounts_update_time = os.path.getmtime(accounts_file_path)
 
-    accounts_update_time = datetime.datetime.fromtimestamp(accounts_update_time)
+        accounts_update_time = datetime.datetime.fromtimestamp(accounts_update_time)
 
-    accounts_update_time_formatted = accounts_update_time.strftime("%Y-%m-%d")
+        accounts_update_time_formatted = accounts_update_time.strftime("%Y-%m-%d")
 
-    print(accounts_update_time)
+        print(accounts_update_time)
+    else:
+        print("No file available yet")
 
     if not accounts_update_time_formatted == today_formatted:
         print(f"Accounts file not synced yet for day {today_formatted}, redownloading.")
