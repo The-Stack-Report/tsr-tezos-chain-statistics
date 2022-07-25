@@ -109,4 +109,3 @@ Providing this function a dataframe returns a dict with the following counts:
 - Gas used
 
 - Blocks
-- 

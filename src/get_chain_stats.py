@@ -44,10 +44,15 @@ async def get_chain_stats():
 
     today = datetime.datetime.now(timezone.utc)
     today_formatted = today.strftime("%Y-%m-%d")
-    accounts_update_time = False
-    accounts_update_time_formatted = False
+    accounts_q = get_accounts()
 
-    if os.path.exists(accounts_file_path):
+    if not os.path.exists(accounts_file_path):
+        print("no accounts df file exists yet, querying")
+        resp = pd.read_sql(accounts_q, dbConnection)
+        resp.to_csv(accounts_file_path, header=True, index=False)
+        print(resp)
+    else:
+        print("accounts cache file exists already, checking if update is required based on file timestamp.")
         accounts_update_time = os.path.getmtime(accounts_file_path)
 
         accounts_update_time = datetime.datetime.fromtimestamp(accounts_update_time)
@@ -55,17 +60,14 @@ async def get_chain_stats():
         accounts_update_time_formatted = accounts_update_time.strftime("%Y-%m-%d")
 
         print(accounts_update_time)
-    else:
-        print("No file available yet")
 
-    if not accounts_update_time_formatted == today_formatted:
-        print(f"Accounts file not synced yet for day {today_formatted}, redownloading.")
-        accounts_q = get_accounts()
-        resp = pd.read_sql(accounts_q, dbConnection)
-        resp.to_csv(accounts_file_path, header=True, index=False)
-        print(resp)
-    else:
-        print(f"Accounts df file already synced for {today_formatted}, skipping querying")
+        if not accounts_update_time_formatted == today_formatted:
+            print(f"Accounts file not synced yet for day {today_formatted}, redownloading.")
+            resp = pd.read_sql(accounts_q, dbConnection)
+            resp.to_csv(accounts_file_path, header=True, index=False)
+            print(resp)
+        else:
+            print(f"Accounts df file already synced for {today_formatted}, skipping querying")
 
 
     # Merging accounts df with days

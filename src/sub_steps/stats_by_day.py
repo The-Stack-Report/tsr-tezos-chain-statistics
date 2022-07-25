@@ -26,8 +26,6 @@ def stats_by_day(dates):
 
             stats["date"] = dt_formatted
 
-            print(stats)
-
             with open(stats_by_day_path, "w") as outfile:
                 json.dump(stats, outfile)
 

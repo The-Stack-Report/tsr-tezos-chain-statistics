@@ -10,10 +10,7 @@ checks = [
 ]
 
 def calculate_stats_for_df(df):
-
-    
     check_results = []
-
     for check in checks:
         check_results.append(
             check.check(df)
@@ -24,12 +21,10 @@ def calculate_stats_for_df(df):
     else:
         raise ValueError("Data frame did not pass all checks")
 
-
     # Wallet sender group
     wallet_sender_df = df[df["sender_address"].str.startswith("tz")]
     wallet_to_wallet_df = wallet_sender_df[wallet_sender_df["target_address"].str.startswith("tz")]
     wallet_to_contract_df = wallet_sender_df[wallet_sender_df["target_address"].str.startswith("KT")]
-
 
     unique_wallet_senders = [addr for addr in df["sender_address"].values if addr.startswith("tz")]
     unique_wallets_targetted = [addr for addr in df["target_address"].values if addr.startswith("tz")]
@@ -41,51 +36,38 @@ def calculate_stats_for_df(df):
     contract_to_contract_df = contract_sender_df[contract_sender_df["target_address"].str.startswith("KT")]
     contract_to_wallet_df = contract_sender_df[contract_sender_df["target_address"].str.startswith("tz")]
 
-
     # Wallet targetted
-    wallet_targetted_df = df[df["target_address"].str.startswith("tz")]
-
+    wallet_targeted_df = df[df["target_address"].str.startswith("tz")]
 
     # Contract targetted
-    contract_targetted_df = df[df["target_address"].str.startswith("KT")]
-
-    
+    contract_targeted_df = df[df["target_address"].str.startswith("KT")]
 
     # Contract entrypoint calls
     entrypoint_calls_df = df[df["Entrypoint"].notnull()]
 
-
     # Transaction groups with contract calls
-
     ophashes_with_entrypoint = entrypoint_calls_df["OpHash"].unique()
-
 
     entrypoint_call_transactions_count = len(entrypoint_calls_df)
 
     transaction_groups_with_entrypoint_calls = len(ophashes_with_entrypoint)
 
-
     transactions_count = len(df)
-
     transactions_groups_count = len(df["OpHash"].unique())
-
     transactions_in_groups_with_entrypoint_calls_df = df[df["OpHash"].isin(ophashes_with_entrypoint)]
-
     transactions_in_groups_with_entrypoint_calls = len(transactions_in_groups_with_entrypoint_calls_df)
-
-
 
     smart_contract_transactions_to_transaction_groups_ratio = False
     if(transaction_groups_with_entrypoint_calls > 0):
         smart_contract_transactions_to_transaction_groups_ratio = transactions_in_groups_with_entrypoint_calls / transaction_groups_with_entrypoint_calls
     
-
     stats = {
         "transactions": transactions_count,
         "wallet_sender_transactions": len(wallet_sender_df),
         "contract_sender_transactions": len(contract_sender_df),
-        "wallet_targetted_transactions": len(wallet_targetted_df),
-        "contract_targetted_transactions": len(contract_targetted_df),
+        "wallet_targeted_transactions": len(wallet_targeted_df),
+        "wallet_targeted_transactions": len(wallet_targeted_df),
+        "contract_targeted_transactions": len(contract_targeted_df),
         "wallet_to_wallet_transactions": len(wallet_to_wallet_df),
         "wallet_to_contract_transactions": len(wallet_to_contract_df),
         "contract_to_contract_transactions": len(contract_to_contract_df),
@@ -103,10 +85,6 @@ def calculate_stats_for_df(df):
         "transactions_in_groups_with_entrypoint_calls": transactions_in_groups_with_entrypoint_calls,
         "transaction_groups_with_entrypoint": transaction_groups_with_entrypoint_calls
     }
-
-    
-
-    # stats = unique_wallets(df, stats)
 
     stats = transaction_groups(df, stats)
 
