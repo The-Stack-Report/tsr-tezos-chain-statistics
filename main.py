@@ -14,6 +14,8 @@ from src.upload_datasets import upload_datasets
 import telegram_send
 import src.utils.postgress
 from src.utils.status_messages import stat_completed_message
+from src.utils.postgress import disconnect
+
 
 from tqdm import tqdm
 import os
@@ -104,7 +106,20 @@ async def process_tasks():
             print(start_message)
             telegram_send.send(messages=[start_message], parse_mode="markdown")
 
+
+            ########################################
+            #
+            # Processing chain stats here
+            #
+
             stats_successful = await get_chain_stats()
+
+            #
+            ########################################
+
+
+
+
             stats_successful = True
 
             if stats_successful:
@@ -136,6 +151,13 @@ async def process_tasks():
             )
             print(completed_msg)
             telegram_send.send(messages=[completed_msg], parse_mode="markdown")
+
+
+            # Disconnecting from postgres to free up connection
+
+            print("Finished processing, disconnecting db before sleeping until next run or exiting.")
+            disconnect()
+
             if loop:
                 print(f"sleeping for {sleep_time_verbose} ({sleep_time_seconds} seconds)")
                 await asyncio.sleep(sleep_time_seconds)

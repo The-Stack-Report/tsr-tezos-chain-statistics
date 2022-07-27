@@ -86,6 +86,5 @@ async def get_chain_stats():
     # 
 
     stats_by_day(dates=date_range_values)
-
     return True
 

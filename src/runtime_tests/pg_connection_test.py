@@ -11,7 +11,6 @@ def run_test():
         test_resp = pd.read_sql(q, dbConnection)
         print("testing a pg query:")
         print(test_resp)
-
         if len(test_resp) > 0:
             return True
         else:
