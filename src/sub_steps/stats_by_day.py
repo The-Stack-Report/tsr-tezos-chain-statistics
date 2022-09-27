@@ -27,9 +27,7 @@ def stats_by_day(dates):
             stats["date"] = dt_formatted
 
             with open(stats_by_day_path, "w") as outfile:
-                json.dump(stats, outfile)
-
-
+                json.dump(stats, outfile, indent=4)
         
         else:
             print(f"Stats exist already at: {stats_by_day_path}")

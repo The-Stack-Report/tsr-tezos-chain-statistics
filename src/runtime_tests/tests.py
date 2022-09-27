@@ -65,7 +65,7 @@ async def run_tests(tests, batch_name=""):
 
 async def perform_startup_tests():
     print('performing runtime startup tests')
-    return await run_tests(startup_tests, "startup")
+    return await run_tests(startup_tests, "tezos chain stats - startup tests")
 
 
 # Run before syncing dataset

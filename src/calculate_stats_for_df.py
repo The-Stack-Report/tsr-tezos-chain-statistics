@@ -83,7 +83,17 @@ def calculate_stats_for_df(df):
 
         "entrypoint_call_transactions": entrypoint_call_transactions_count,
         "transactions_in_groups_with_entrypoint_calls": transactions_in_groups_with_entrypoint_calls,
-        "transaction_groups_with_entrypoint": transaction_groups_with_entrypoint_calls
+        "transaction_groups_with_entrypoint": transaction_groups_with_entrypoint_calls,
+
+        "gas_used_sum": df["GasUsed"].sum() / 1,
+        "gas_used_max": df["GasUsed"].max() / 1,
+        "gas_used_median": df["GasUsed"].median() / 1,
+        "gas_used_mean": df["GasUsed"].mean() / 1,
+
+        "baker_fee_xtz_sum": round(df["BakerFee"].sum() / 1_000_000, 1),
+        "baker_fee_xtz_max": df["BakerFee"].max() / 1_000_000,
+        "baker_fee_xtz_median": df["BakerFee"].median() / 1_000_000,
+        "baker_fee_xtz_mean": df["BakerFee"].mean() / 1_000_000,
     }
 
     stats = transaction_groups(df, stats)

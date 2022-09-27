@@ -182,22 +182,34 @@ chain_start_date = "2018-06-30"
 
 async def main():
     print("Initializing directories:")
+    startup_tests_passed = False
     for d in dirs:
         print(d)
         d.mkdir(exist_ok=True, parents=True)
 
-    print("Initializing startup tests")
-    startup_tests = await perform_startup_tests()
+    while startup_tests_passed == False:
 
-    print("Startup tests finished")
-    print(startup_tests["summary"])
+        print("Initializing startup tests")
+        startup_tests = await perform_startup_tests()
 
-    if startup_tests["passed"] == True:
-        print("Passed startup tests, initializing first sync task in task queue.")
-    else:
-        print("Failed startup tests, aborting script.")
+        print("Startup tests finished")
+        print(startup_tests["summary"])
+
+        if startup_tests["passed"] == True:
+            print("Passed startup tests, initializing first sync task in task queue.")
+            startup_tests_passed = True
+        else:
+            print("Failed startup tests, retrying in 1h.")
+            telegram_send.send(
+                messages=[startup_tests["summary"]],
+                parse_mode="markdown"
+            )
+            telegram_send.send(
+                messages=[f"Some pre-sync tests have failed. \nRetrying in 1h"],
+                parse_mode="markdown"
+            )
+            await asyncio.sleep(60 * 60)
         
-        return False
     print("running")
 
     await task_queue.put("sync!")
