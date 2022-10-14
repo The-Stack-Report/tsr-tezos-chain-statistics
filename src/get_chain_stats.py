@@ -11,9 +11,7 @@ from src.sub_steps.extract_ops_by_day_from_db import extract_ops_by_day_from_db
 from src.sub_steps.enrich_ops_with_account_data import enrich_ops_with_account_data
 from src.sub_steps.stats_by_day import stats_by_day
 
-
-
-chain_start_date = "2018-06-30"
+chain_start_date = "2022-10-07"
 
 async def get_chain_stats():
     dbConnection = pg_connection()
