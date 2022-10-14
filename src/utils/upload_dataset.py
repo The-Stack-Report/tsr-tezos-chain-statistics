@@ -1,4 +1,4 @@
-from src.utils.mongo_db import upload_attributes_to_mongo
+#from src.utils.mongo_db import upload_attributes_to_mongo
 from src.utils.s3 import upload_file_to_s3
 from src.constants import (
     cache_path
@@ -16,12 +16,10 @@ def upload_dataset(dataset_description):
     dataset_description["file_size"] = get_file_size_readable(file_path)
 
     if os.path.isfile(file_path):
-        upload_attributes_to_mongo(
-            key=dataset_description["key"],
-            attributes=dataset_description
-        )
-
-
+        # upload_attributes_to_mongo(
+        #     key=dataset_description["key"],
+        #     attributes=dataset_description
+        # )
 
         upload_file_to_s3(
             file_path = file_path,
