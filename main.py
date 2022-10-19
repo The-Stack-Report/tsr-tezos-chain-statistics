@@ -94,7 +94,7 @@ async def process_tasks():
         pre_sync_tests_summary = pre_sync_tests_passed["summary"]
         print(pre_sync_tests_summary)
 
-        telegram_send.send(
+        send_telegram(
             messages=[f"Presync test results", pre_sync_tests_summary],
             parse_mode="markdown")
 
@@ -104,7 +104,7 @@ async def process_tasks():
             machine = os.getenv("MACHINE")
             start_message = f"{machine} Initiating *Tezos chain stats* daily script at: \n {task_start_ts}"
             print(start_message)
-            telegram_send.send(messages=[start_message], parse_mode="markdown")
+            send_telegram(messages=[start_message], parse_mode="markdown")
 
 
             ########################################
@@ -150,7 +150,7 @@ async def process_tasks():
                 sleep_time_verbose
             )
             print(completed_msg)
-            telegram_send.send(messages=[completed_msg], parse_mode="markdown")
+            send_telegram(messages=[completed_msg], parse_mode="markdown")
 
 
             # Disconnecting from postgres to free up connection
@@ -170,7 +170,7 @@ async def process_tasks():
             print(f"Trying again in {retry_time_verbose}")
 
             
-            telegram_send.send(
+            send_telegram(
                 messages=[f"Some pre-sync tests have failed. \nRetrying in {retry_time_verbose}"],
                 parse_mode="markdown"
             )
@@ -179,6 +179,11 @@ async def process_tasks():
 
 
 chain_start_date = "2018-06-30"
+
+def send_telegram(messages, parse_mode):
+    if telegram_disabled is False:
+        return
+    telegram_send.send(messages=messages, parse_mode=parse_mode)
 
 async def main():
     print("Initializing directories:")
@@ -200,11 +205,11 @@ async def main():
             startup_tests_passed = True
         else:
             print("Failed startup tests, retrying in 1h.")
-            telegram_send.send(
+            send_telegram(
                 messages=[startup_tests["summary"]],
                 parse_mode="markdown"
             )
-            telegram_send.send(
+            send_telegram(
                 messages=[f"Some pre-sync tests have failed. \nRetrying in 1h"],
                 parse_mode="markdown"
             )
@@ -227,5 +232,9 @@ if __name__ == "__main__":
         print("Running in looping mode")
     if loop == False:
         print("Running in single mode")
+    telegram_disabled = False
+    if os.getenv("TELEGRAM_DISABLED") == 1:
+        telegram_disabled = True
+        print("TELEGRAM IS NOW DISABLED!!")
     
     asyncio.run(main())

@@ -12,8 +12,8 @@ startup_tests = [
     pg_connection_test,
     # tzkt_connections_test,
     s3_connection_test,
-    mongo_connection_test,
-    telegram_bot_test,
+    # mongo_connection_test,
+    # telegram_bot_test,
     head_levels_test
 ]
 
