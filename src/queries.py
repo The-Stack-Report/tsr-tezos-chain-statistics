@@ -1,5 +1,7 @@
 import sqlalchemy
 import datetime
+import pandas as pd
+from src.utils.postgress import pg_connection, disconnect
 
 def all_ops_query():
     return sqlalchemy.text("""SELECT
@@ -94,3 +96,21 @@ def get_accounts():
 SELECT * FROM public."Accounts"
 ORDER BY "Id" ASC
 """
+
+
+def get_max_block_level():
+    return """
+SELECT MAX("Level") as max_block_level FROM public."Blocks"
+"""
+
+if __name__ == "__main__":
+    print("testing queries")
+    dbConnection = pg_connection()
+    max_level_query = get_max_block_level()
+    max_level = pd.read_sql(max_level_query, dbConnection)
+    print(max_level)
+    print(max_level["max_block_level"].max())
+
+    print("disconnecting engine")
+    disconnect()
+

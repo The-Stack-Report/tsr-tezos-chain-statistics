@@ -4,8 +4,10 @@ import numbers
 import asyncio
 import aiohttp
 from pydash import get
-
+from src.utils.postgress import pg_connection, disconnect
+import pandas as pd
 load_dotenv()
+from src.queries import get_max_block_level
 
 async def get_url(url):
     resp_data = False
@@ -25,19 +27,20 @@ end_points = [
         "api_path":"/head",
         "level_path": "level"
     },
-    {
-        "name": "Tzkt local chain head",
-        "key": "indexer_tzkt_local_chain_head",
-        "env_address": "TZKT_ADDRESS",
-        "api_path":"/head",
-        "level_path": "level"
-
-    }
+    # {
+    #     "name": "Tzkt local chain head",
+    #     "key": "indexer_tzkt_local_chain_head",
+    #     "env_address": "TZKT_ADDRESS",
+    #     "api_path":"/head",
+    #     "level_path": "level"
+    # }
 ]
 
 async def get_head_levels():
 
     levels = []
+
+    print("Getting levels from api & rpc endpoints.")
     for p in end_points:
         rpc_url = os.getenv(p["env_address"])
 
@@ -49,12 +52,25 @@ async def get_head_levels():
             levels.append(level)
         print(f"current level: {level}")
 
+    print("Getting max level from postgres db.")
+    dbConnection = pg_connection()
+    max_level_query = get_max_block_level()
+    max_level = pd.read_sql(max_level_query, dbConnection)
+    print(max_level)
+    print(max_level["max_block_level"].max())
+    max_db_level = max_level["max_block_level"].max()
+    levels.append(max_db_level)
+
+
     return levels
 
 
 
 async def get_head_levels_diff():
     levels = await get_head_levels()
+
+    print("Checking difference between levels: ")
+    print(levels)
     level_min = min(levels)
     level_max = max(levels)
 

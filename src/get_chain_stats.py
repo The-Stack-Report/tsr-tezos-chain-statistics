@@ -4,7 +4,7 @@ from datetime import timezone
 import pandas as pd
 from tqdm import tqdm
 from src.queries import get_accounts
-from src.utils.postgress import pg_connection
+from src.utils.postgress import pg_connection, disconnect
 import os
 import asyncio
 from src.sub_steps.extract_ops_by_day_from_db import extract_ops_by_day_from_db

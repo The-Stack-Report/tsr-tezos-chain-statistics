@@ -88,8 +88,14 @@ async def process_tasks():
         task_start_ts = datetime.datetime.now()
 
         # Check if head of local tzkt node and public tzkt are in sync
+        pre_sync_tests_passed = {"passed": False}
 
-        pre_sync_tests_passed = await perform_pre_sync_tests()
+        try:
+            pre_sync_tests_passed = await perform_pre_sync_tests()
+        except Exception:
+            print("error in running presync tests")
+            print(Exception)
+            telegram_send.send(messages=["error in running presync tests"], parse_mode="markdown")
 
         pre_sync_tests_summary = pre_sync_tests_passed["summary"]
         print(pre_sync_tests_summary)
@@ -111,20 +117,22 @@ async def process_tasks():
             #
             # Processing chain stats here
             #
-
-            stats_successful = await get_chain_stats()
+            stats_successful = False
+            try:
+                stats_successful = await get_chain_stats()
+            except Exception:
+                print("Error in calculating chain stats:")
+                print(stats_successful)
 
             #
             ########################################
 
 
-
-
-            stats_successful = True
-
             if stats_successful:
                 print("Stats successfully calculated, uploading datasets.")
                 upload_datasets()
+            else:
+                print("Error in calculating statistics")
             
             
 
@@ -166,6 +174,7 @@ async def process_tasks():
             retries_on_day += 1
             retry_time = retry_interval(retries_on_day)
             retry_time_verbose = verbose_timedelta(datetime.timedelta(seconds=retry_time))
+            disconnect()
             print(f"Some pre-sync tests have failed.")
             print(f"Trying again in {retry_time_verbose}")
 
@@ -191,6 +200,8 @@ async def main():
 
         print("Initializing startup tests")
         startup_tests = await perform_startup_tests()
+
+        await asyncio.sleep(1)
 
         print("Startup tests finished")
         print(startup_tests["summary"])

@@ -39,12 +39,16 @@ def pg_connection():
 def disconnect():
     global alchemyEngine, dbConnection
     print("disconnecting db")
-    if dbConnection:
-        print("Closing connection.")
-        dbConnection.close()
-        dbConnection = False
-    if alchemyEngine:
-        print("Disposing engine.")
-        alchemyEngine.dispose()
-        alchemyEngine = False
+    try:
+        if dbConnection:
+            print("Closing connection.")
+            dbConnection.close()
+            dbConnection = False
+        if alchemyEngine:
+            print("Disposing engine.")
+            alchemyEngine.dispose()
+            alchemyEngine = False
+    except Exception:
+        print("Error in disconnecting from db:")
+        print(Exception)
 
