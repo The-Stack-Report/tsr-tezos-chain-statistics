@@ -210,6 +210,7 @@ async def main():
             print("Passed startup tests, initializing first sync task in task queue.")
             startup_tests_passed = True
         else:
+            disconnect()
             print("Failed startup tests, retrying in 1h.")
             telegram_send.send(
                 messages=[startup_tests["summary"]],
